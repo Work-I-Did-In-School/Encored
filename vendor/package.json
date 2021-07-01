@@ -1,0 +1,17 @@
+{
+  "name": "vendor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "vendor.js",
+  "scripts": {
+    "test": "jest --verbose --coverage",
+    "start": "node vendor.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "faker": "^5.5.3",
+    "socket.io-client": "^4.1.2"
+  }
+}

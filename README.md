@@ -1,7 +1,6 @@
 # Coding Academy Parcel Service
 
-<!-- replace with commit shield -->
-last edited: June 28, 2021
+![last commit](https://img.shields.io/github/last-commit/CullenSharp/CAPS)
 
 Write an event-driven system for managing packages in real-time. Communicate between vendors and drivers to ensure smooth delivery.
 

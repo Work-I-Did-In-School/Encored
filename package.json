@@ -4,7 +4,8 @@
   "description": "",
   "main": "caps.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose --coverage",
+    "start": "node caps.js"
   },
   "repository": {
     "type": "git",
@@ -19,8 +20,7 @@
   "homepage": "https://github.com/CullenSharp/CAPS#readme",
   "dependencies": {
     "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "faker": "^5.5.3",
-    "jest": "^27.0.6"
+    "jest": "^27.0.6",
+    "socket.io": "^4.1.2"
   }
 }
