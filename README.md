@@ -12,4 +12,6 @@ Write an event-driven system for managing packages in real-time. Communicate bet
 
 ## Whiteboard
 
-![UML](UML.png)
+![UML1](./assets/UML1.JPG)
+
+![UML2](./assets/UML2.JPG)
