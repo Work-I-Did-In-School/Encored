@@ -2,13 +2,19 @@
 
 // 3rd party resources
 const io = require('socket.io-client');
-const client = io.connect('http://localhost:3000/caps');
+const client = io.connect('http://localhost:3000/caps'); // todo change namespace
 const inquirer = require('inquirer');
 
-client.on('success', () => {
-  console.log('🚚  drivers logging in', '\n');
+const name = process.argv[2];
+//* node cullen.js [cullen]
 
-  client.emit('get all');
+client.on('success', () => {
+  console.log(`👨‍💻  ${name} logging in`, '\n');
+
+  // ? get all messages in my queue
+  // ? wait wouldn't I have to put them in someone else's 'mailbox'
+  // ? i think this could be seen on socket.listeners?
+  client.emit('get all', name);
 
   inquirer
     .prompt([
@@ -26,20 +32,6 @@ client.on('success', () => {
     });
 
   client.on('sent', payload => {
-    setTimeout(() => {
-      //destructure payload here maybe?
-      console.log(`🚚 DRIVER: Picked up ${payload.payload}`, '\n');
-
-      // todo change event names 
-      client.emit('in transit', payload);
-    }, 1500);
-
-    setTimeout(() => {
-      console.log(`🚚 DRIVER: Delivered ${payload.id}`, '\n');
-      payload.payload.event = 'delivered';
-
-      client.emit('delivered', payload);
-    }, 3000);
   });
 });
 
