@@ -28,6 +28,9 @@ An event driven chat service built with Socket.io and authenticated with web tok
 
 ## Whiteboard
 
-![UML](UML.png)
+![UML1](./assets/UML1.JPG)
+
+![UML2](./assets/UML2.JPG)
 
 ## API
+
