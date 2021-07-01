@@ -32,10 +32,6 @@ client.on('success', () => {
     });
 
   client.on('sent', payload => {
-    // ? dynamically create names...
-
-    console.log(`🚚 Tim: ${payload.payload}`, '\n');
-    client.emit('read', payload);
   });
 });
 

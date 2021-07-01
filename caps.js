@@ -1,59 +1,73 @@
 'use strict';
 
-// 3rd party resources
+// === === 3rd party resources === === //
 require('dotenv').config();
 const io = require('socket.io');
+const server = io(3000);
+const encord = server.of('/encord');
 
-// esoteric resources
+
+// === === esoteric resources === === //
 const MessageQueue = require('./MessageQueue');
 
-// setup message queue
-const flowers = new MessageQueue('flowers');
-// const widgets = new MessageQueue('Widgets');
+
+// === === Message Queue === === //
+const queues = {
+  timbo: new MessageQueue('timbo'),
+  cullen: new MessageQueue('cullen'),
+};
 
 
-const server = io(3000);
+// === === payload === === //
+// const payload = {
+//   messageId,
+//   clientName,
+//   payload,
+// };
 
-const caps = server.of('/caps');
 
-caps.on('connection', (socket) => {
+// === === socket stuff === === //
+encord.on('connection', (socket) => {
   socket.emit('success');
-
   console.log('connected to', socket.id);
 
-  socket.on('pickup', payload => {
-    console.log('🎉 EVENT:', payload, '\n');
+  // === sent === //
+  socket.on('sent', payload => {
+    console.log('👨‍💻MESSAGE:', payload, '\n');
 
     try {
-      let flowerOrder = flowers.add(payload);
-      socket.emit('added');
-      caps.emit('pickup', {
-        id: flowerOrder.id,
-        payload: flowerOrder.value,
+      let clientMessage = queues[payload.clientName].add(payload.message);
+      encord.emit('sent', {
+        id: clientMessage.id,
+        payload: clientMessage.value,
       });
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
   });
 
-  socket.on('get all', () => {
-    const allFlowers = flowers.getAll();
+  // === get all === //
+  socket.on('get all', (payload) => {
+    const allMessages = queues[payload].getAll();
 
-    allFlowers.forEach(order => {  
-      socket.emit('pickup', order);
+    allMessages.forEach(message => {
+      socket.emit('sent', message);
     });
   });
 
+  // === in transit === //
   socket.on('in transit', (...args) => {
-    console.log('🎉 EVENT:', ...args, '\n');
-  });
-  
-  socket.on('delivered', (...args) => {
-    console.log('🎉 EVENT:', ...args, '\n');
-    caps.emit('delivered', ...args);
+    console.log('👨‍💻MESSAGE:', ...args, '\n');
   });
 
-  socket.on('received', (message) => {
-    flowers.received(message.id);
+  // === delivered === //
+  socket.on('delivered', (...args) => {
+    console.log('👨‍💻MESSAGE:', ...args, '\n');
+    encord.emit('delivered', ...args);
+  });
+
+  // === read === //
+  socket.on('read', (message) => {
+    queues.received(message.id);
   });
 });
