@@ -29,7 +29,7 @@ caps.on('connection', (socket) => {
       socket.emit('added');
       caps.emit('pickup', {
         id: flowerOrder.id,
-        payload: flowerOrder.value, // * this is going to have to change the driver
+        payload: flowerOrder.value,
       });
     } catch(e) {
       console.error(e);
@@ -39,7 +39,7 @@ caps.on('connection', (socket) => {
   socket.on('get all', () => {
     const allFlowers = flowers.getAll();
 
-    allFlowers.forEach(order => {
+    allFlowers.forEach(order => {  
       socket.emit('pickup', order);
     });
   });
@@ -54,6 +54,6 @@ caps.on('connection', (socket) => {
   });
 
   socket.on('received', (message) => {
-    flowers.received(message.id); // ! idk if this is how this works...
+    flowers.received(message.id);
   });
 });
