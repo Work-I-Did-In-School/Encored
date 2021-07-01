@@ -9,7 +9,7 @@ require('dotenv').config();
 const client = io.connect('http://localhost:3000/caps');
 
 const FLOWERVENDOR = process.env.FLOWERVENDOR || '1-206-FLOWERS';
-const WIDGETVENDOR = process.env.WIDGETVENDOR;
+// const WIDGETVENDOR = process.env.WIDGETVENDOR;
 
 client.on('success', () => {
   console.log('🏢 Vendor connected', '\n')
