@@ -4,17 +4,44 @@
 require('dotenv').config();
 const io = require('socket.io');
 
-// * hub for creating events
+// esoteric resources
+const MessageQueue = require('./MessageQueue');
+
+// setup message queue
+const flowers = new MessageQueue('flowers');
+// const widgets = new MessageQueue('Widgets');
+
+
 const server = io(3000);
 
+const caps = server.of('/caps');
 
-server.on('connection', (socket) => {
+caps.on('connection', (socket) => {
+  socket.emit('success');
 
-  socket.emit('success', 'calling all channels');
+  console.log('connected to', socket.id);
 
-  socket.on('pickup', (...args) => {
-    console.log('🎉 EVENT:', ...args, '\n');
-    server.emit('pickup', ...args);
+  socket.on('pickup', payload => {
+    console.log('🎉 EVENT:', payload, '\n');
+
+    try {
+      let flowerOrder = flowers.add(payload);
+      socket.emit('added');
+      caps.emit('pickup', {
+        id: flowerOrder.id,
+        payload: flowerOrder.value, // * this is going to have to change the driver
+      });
+    } catch(e) {
+      console.error(e);
+    }
+  });
+
+  socket.on('get all', () => {
+    const allFlowers = flowers.getAll();
+
+    allFlowers.forEach(order => {
+      socket.emit('pickup', order);
+    });
   });
 
   socket.on('in transit', (...args) => {
@@ -23,6 +50,10 @@ server.on('connection', (socket) => {
   
   socket.on('delivered', (...args) => {
     console.log('🎉 EVENT:', ...args, '\n');
-    server.emit('delivered', ...args);
+    caps.emit('delivered', ...args);
+  });
+
+  socket.on('received', (message) => {
+    flowers.received(message.id); // ! idk if this is how this works...
   });
 });
