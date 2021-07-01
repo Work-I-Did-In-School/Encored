@@ -1,37 +1,37 @@
 'use strict';
 
 // 3rd party resources
-const faker = require('faker');
 const io = require('socket.io-client');
 require('dotenv').config();
+const inquirer = require('inquirer');
 
 //start connection
 const client = io.connect('http://localhost:3000/caps');
 
 const FLOWERVENDOR = process.env.FLOWERVENDOR || '1-206-FLOWERS';
-// const WIDGETVENDOR = process.env.WIDGETVENDOR;
 
 client.on('success', () => {
-  console.log('🏢 Vendor connected', '\n')
+  console.log('🏢 Vendor connected', '\n');
+  
+  client.emit('get all');
 
-  setInterval(() => {
-    const payload = {
-      event: 'pickup',
-      time: faker.datatype.datetime(),
-      payload: {
-        storeName: FLOWERVENDOR,
-        orderId: faker.datatype.uuid(),
-        customerName: faker.name.findName(),
-        address: faker.address.streetAddress(),
+  inquirer
+    .prompt([
+      {
+        type: 'string',
+        message: 'send a message',
+        name: 'response'
       }
-    }
-    
-    client.emit('pickup', payload);
-  }, 5000);
+    ])
+    .then(answers => {
+      client.emit('pickup', answers.response);
+    })
+    .catch(error => {
+      console.log(error)
+    });
 
   client.on('delivered', (payload) => {
     console.log(`🏢 VENDOR: Thank you for delivering ${payload.id}`, '\n');
     client.emit('received', payload);
   })
 })
-
