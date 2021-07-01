@@ -19,17 +19,17 @@ client.on('success', () => {
       },
     ])
     .then(answers => {
-      client.emit('pickup', answers.response);
+      client.emit('sent', answers.response);
     })
     .catch(error => {
       console.log(error);
     });
 
-  client.on('pickup', payload => {
+  client.on('sent', payload => {
     setTimeout(() => {
       //destructure payload here maybe?
       console.log(`🚚 DRIVER: Picked up ${payload.payload}`, '\n');
-    
+
       // todo change event names 
       client.emit('in transit', payload);
     }, 1500);
@@ -37,7 +37,7 @@ client.on('success', () => {
     setTimeout(() => {
       console.log(`🚚 DRIVER: Delivered ${payload.id}`, '\n');
       payload.payload.event = 'delivered';
-    
+
       client.emit('delivered', payload);
     }, 3000);
   });
