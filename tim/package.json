@@ -1,16 +1,18 @@
 {
-  "name": "driver",
+  "name": "vendor",
   "version": "1.0.0",
   "description": "",
-  "main": "driver.js",
+  "main": "vendor.js",
   "scripts": {
     "test": "jest --verbose --coverage",
-    "start": "node driver.js"
+    "start": "node tim.js timbo cullen"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^10.0.0",
+    "faker": "^5.5.3",
     "inquirer": "^8.1.1",
     "socket.io-client": "^4.1.2"
   }

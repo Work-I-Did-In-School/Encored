@@ -29,6 +29,12 @@ const queues = {
 // === === socket stuff === === //
 encord.on('connection', (socket) => {
   socket.emit('success');
+
+  socket.on('join', (room) => {
+    if(!queues[room]) { queues[room] = new MessageQueue(room); }
+    socket.join(room);
+  });
+
   console.log('connected to', socket.id);
 
   // === sent === //
@@ -36,11 +42,14 @@ encord.on('connection', (socket) => {
     console.log('👨‍💻MESSAGE:', payload, '\n');
 
     try {
-      let clientMessage = queues[payload.clientName].add(payload.message);
-      encord.emit('sent', {
-        id: clientMessage.id,
-        payload: clientMessage.value,
-      });
+      let clientMessage = queues[payload.room].add(payload.message);
+
+      encord.to(payload.room)
+        .emit('sent', {
+          room: payload.room,
+          id: clientMessage.id,
+          payload: clientMessage.value,
+        });
     } catch (e) {
       console.error(e);
     }
@@ -55,19 +64,9 @@ encord.on('connection', (socket) => {
     });
   });
 
-  // === in transit === //
-  socket.on('in transit', (...args) => {
-    console.log('👨‍💻MESSAGE:', ...args, '\n');
-  });
-
-  // === delivered === //
-  socket.on('delivered', (...args) => {
-    console.log('👨‍💻MESSAGE:', ...args, '\n');
-    encord.emit('delivered', ...args);
-  });
-
   // === read === //
   socket.on('read', (message) => {
-    queues.received(message.id);
+    console.log('🚧 testing:', queues[message.room].messages);
+    queues[message.room].received(message.id);
   });
 });

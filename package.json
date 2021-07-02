@@ -5,7 +5,7 @@
   "main": "caps.js",
   "scripts": {
     "test": "jest --verbose --coverage",
-    "start": "node caps.js"
+    "start": "node encord.js"
   },
   "repository": {
     "type": "git",
