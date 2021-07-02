@@ -9,40 +9,41 @@ const inquirer = require('inquirer');
 const client = io.connect('http://localhost:3000/encord');
 
 
-// const FLOWERVENDOR = process.env.FLOWERVENDOR || '1-206-FLOWERS';
 const clientName = process.argv[2];
 const recipient = process.argv[3];
-// node client timbo
 
 
 client.on('success', () => {
   console.log(`${clientName}, logging in`, '\n');
   console.log(recipient);
 
-  client.emit('get all', clientName);
+  client.emit('join', 'cullenAndTim');
+
+  client.emit('get all', 'cullenAndTim');
 
   inquirer
     .prompt([
       {
         type: 'string',
-        message: 'send a message',
-        name: 'response'
-      }
+        message: `${clientName}:`,
+        name: 'response',
+      },
     ])
     .then(answers => {
       const payload = {
+        room: 'cullenAndTim',
         clientName: clientName,
         message: answers.response,
-      }
+      };
 
       client.emit('sent', payload);
     })
     .catch(error => {
-      console.log(error)
+      console.log(error);
     });
-
-  client.on('delivered', (payload) => {
-    console.log(`🏢 VENDOR: Thank you for delivering ${payload.id}`, '\n');
-    client.emit('received', payload);
-  })
-})
+    
+  client.on('sent', (payload) => {
+    console.log(payload.payload, '\n');
+    client.emit('read', payload);
+  });
+});
